@@ -12,9 +12,14 @@ class Company(models.Model):
         return self.name
 
 class CustomUser(AbstractUser):
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     role = models.CharField(max_length=100)
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.is_superuser:
+            self.is_active = False
+        super().save(*args, **kwargs)
