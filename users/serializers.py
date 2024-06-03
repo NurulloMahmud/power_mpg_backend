@@ -3,9 +3,14 @@ from .models import CustomUser, Company
 
 
 class CompanySerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
     class Meta:
         model = Company
         fields = "__all__"
+
+    def get_users(self, obj):
+        users = CustomUser.objects.filter(company=obj).count()
+        return users
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:

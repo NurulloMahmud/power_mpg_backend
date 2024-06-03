@@ -1,9 +1,10 @@
 from rest_framework import generics
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from .models import CustomUser
+from .models import CustomUser, Company
 from .serializers import (
     UserRegisterSerializer, UserListSerializer,
-    UserUpdateSerializer,
+    UserUpdateSerializer, CompanySerializer
 )
 from .permissions import IsAdminRole
 
@@ -20,5 +21,10 @@ class UserListView(generics.ListAPIView):
 class UserUpdateView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserUpdateSerializer
+    permission_classes = [IsAuthenticated, IsAdminRole]
+
+class CompanyViewSet(ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
 
