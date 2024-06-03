@@ -12,6 +12,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['username', 'password']
 
+class UserListSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+    class Meta:
+        model = CustomUser
+        fields = ["username", "company", "role"]
 
-
-
+class UserUpdateSerializer(serializers.ModelSerializer):
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), allow_null=True)
+    class Meta:
+        model = CustomUser
+        fields = ["company", "role", "is_active"]
