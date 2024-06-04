@@ -13,7 +13,7 @@ class Company(models.Model):
 
 class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     role = models.CharField(max_length=100)
 
     def __str__(self):
