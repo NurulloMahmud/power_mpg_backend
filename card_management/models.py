@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class Card(models.Model):
@@ -15,7 +16,11 @@ class Card(models.Model):
         if not self.pk:
             CardDriverHistory.objects.create(card=self, driver=self.driver, beg_date=self.created_at)
         else:
-            card_driver = CardDriverHistory.objects.get(card=self, )
+            card_driver = CardDriverHistory.objects.get(card=self, driver=self.driver, end_date__isnull=True)
+            if self.driver != card_driver.driver:
+                card_driver.end_date = datetime.now()
+                card_driver.save()
+                CardDriverHistory.objects.create(card=self, driver=self.driver, beg_date=self.created_at)
         super().save(*args, **kwargs)
 
 class CardDriverHistory(models.Model):
@@ -23,3 +28,6 @@ class CardDriverHistory(models.Model):
     driver = models.CharField(max_length=100)
     beg_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return self.driver

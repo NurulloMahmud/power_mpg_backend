@@ -8,6 +8,7 @@ class Company(models.Model):
     phone_number = models.CharField(max_length=14)
     email = models.EmailField(null=True, blank=True)
     price_category = models.PositiveIntegerField(null=True, blank=True) # remove null later
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
