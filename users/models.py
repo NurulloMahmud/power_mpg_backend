@@ -7,6 +7,7 @@ class Company(models.Model):
     owner = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=14)
     email = models.EmailField(null=True, blank=True)
+    price_category = models.PositiveIntegerField(null=True, blank=True) # remove null later
 
     def __str__(self):
         return self.name
