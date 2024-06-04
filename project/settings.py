@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     # custom apps
     'users',
     'price_management',
+    'card_management',
     # third party
     'rest_framework',
     'rest_framework_simplejwt',
