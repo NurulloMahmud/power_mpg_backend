@@ -14,7 +14,8 @@ class CardReadSerializer(serializers.ModelSerializer):
         return company_obj.name
 
 class CardWriteSerializer(serializers.ModelSerializer):
-    company = serializers.PrimaryKeyRelatedField(queryset="users.Company.objects.all()")
+    from users.models import Company
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
     class Meta:
         model = Card
         fields = "__all__"
