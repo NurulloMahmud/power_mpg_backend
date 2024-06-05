@@ -52,12 +52,7 @@ class CardWriteSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 class CardDriverHistorySerializer(serializers.ModelSerializer):
-    company = serializers.SerializerMethodField()
     class Meta:
         model = CardDriverHistory
         fields = "__all__"
-    
-    def get_company(self, obj):
-        from users.models import Company
-        company_obj = Company.objects.get(id=obj.company.id)
-        return company_obj.name
+        

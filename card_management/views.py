@@ -21,3 +21,6 @@ class CardDriverHistoryListView(generics.ListAPIView):
     queryset = CardDriverHistory.objects.all()
     permission_classes = [IsAuthenticated, IsStaffRole]
 
+    def get_queryset(self):
+        return CardDriverHistory.objects.all().order_by('end_date')
+
