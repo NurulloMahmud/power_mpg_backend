@@ -3,3 +3,5 @@ __pycache__/
 /__pycache__/
 .env
 api_test.py
+venv/
+test_env/
