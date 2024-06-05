@@ -27,3 +27,8 @@ class IsAdminRole(RoleBasedPermission):
     """
     required_roles = ['admin']
 
+class IsStaffRole(RoleBasedPermission):
+    """
+    Custom permission to only allow users with the "staff" role to access the view.
+    """
+    required_roles = ['staff', 'admin']

@@ -1,9 +1,10 @@
 from rest_framework import viewsets
-from .models import Card
-from .serializers import CardReadSerializer, CardWriteSerializer
+from .models import Card, CardDriverHistory
+from .serializers import CardReadSerializer, CardWriteSerializer, CardDriverHistorySerializer
 from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsAdminRole
-
+from rest_framework import generics
+from users.permissions import IsAdminRole, IsStaffRole
 
 
 class CardViewSet(viewsets.ModelViewSet):
@@ -14,3 +15,9 @@ class CardViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return CardWriteSerializer
         return CardReadSerializer
+
+class CardDriverHistoryListView(generics.ListAPIView):
+    serializer_class = CardDriverHistorySerializer
+    queryset = CardDriverHistory.objects.all()
+    permission_classes = [IsAuthenticated, IsStaffRole]
+
