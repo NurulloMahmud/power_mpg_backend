@@ -5,3 +5,4 @@ __pycache__/
 api_test.py
 venv/
 test_env/
+soap_test/
