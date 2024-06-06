@@ -24,3 +24,10 @@ class CardDriverHistoryListView(generics.ListAPIView):
     def get_queryset(self):
         return CardDriverHistory.objects.all().order_by('end_date')
 
+class ActiveCardsListView(generics.ListAPIView):
+    serializer_class = CardReadSerializer
+    queryset = Card.objects.all()
+    permission_classes = [IsAuthenticated, IsStaffRole]
+
+    def get_queryset(self):
+        return Card.objects.filter(active=True)
