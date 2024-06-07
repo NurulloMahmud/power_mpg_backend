@@ -26,6 +26,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('price_management/', include('price_management.urls')),
     path('card_management/', include('card_management.urls')),
+    path('transactions/', include('transactions.urls')),
 
     # swagger
     path('api/swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),

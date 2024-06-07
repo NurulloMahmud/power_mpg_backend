@@ -4,14 +4,21 @@ from datetime import datetime
 
 
 class Card(models.Model):
+    from users.models import Company
     card_number = models.CharField(max_length=25, unique=True)
     driver = models.CharField(max_length=100, null=True, blank=True)
-    company = models.ForeignKey('users.Company', on_delete=models.CASCADE, null=True, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
     active = models.BooleanField(default=False)
+    last_digits = models.CharField(max_length=5, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.card_number
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.last_digits = self.card_number[-5:]
+        super().save(*args, **kwargs)
 
 class CardDriverHistory(models.Model):
     card = models.CharField(max_length=25, null=True, blank=True)
@@ -22,22 +29,3 @@ class CardDriverHistory(models.Model):
 
     def __str__(self):
         return self.driver
-
-class FuelTransactions(models.Model):
-    from price_management.models import StorePrice
-    card = models.ForeignKey(Card, on_delete=models.CASCADE)
-    date = models.DateField()
-    gallons = models.FloatField()
-    retail_price = models.FloatField()
-    discounted_price = models.FloatField()
-    amount_saved = models.FloatField()
-    store = models.ForeignKey(StorePrice, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.date)
-
-    def save(self, *args, **kwargs):
-        from price_management.models import StorePrice
-        if not self.pk:
-            store_price = StorePrice.objects.filter(date=self.date).first()
-        super().save(*args, **kwargs)

@@ -16,6 +16,7 @@ class StorePrice(models.Model):
     date = models.DateField()
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     retail_price = models.FloatField()
+    company_price = models.FloatField(blank=True, null=True)
     price_1 = models.FloatField(blank=True, null=True)
     price_2 = models.FloatField(blank=True, null=True)
     price_3 = models.FloatField(blank=True, null=True)
