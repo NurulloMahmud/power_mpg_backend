@@ -24,6 +24,7 @@ class Transaction(models.Model):
     client_profit = models.FloatField()
     company_profit = models.FloatField()
     transaction_fee = models.FloatField(default=0)
+    location_name = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.card
