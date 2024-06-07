@@ -1,7 +1,8 @@
 from django.urls import path, include
 from .views import (
     StoreViewSet, StorePriceViewSet,
-    StorePriceByDate, StorePriceCreatePilotView
+    StorePriceByDate, StorePriceCreatePilotView,
+    StorePriceCreateLovesView
 )
 
 from rest_framework.routers import DefaultRouter
@@ -15,4 +16,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('store-price-by-date/', StorePriceByDate.as_view()),
     path('store-price-create-pilot/', StorePriceCreatePilotView.as_view()),
+    path('store-price-create-loves/', StorePriceCreateLovesView.as_view()),
 ]
