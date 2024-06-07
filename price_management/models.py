@@ -8,7 +8,7 @@ class Store(models.Model):
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=10)
     zip_code = models.CharField(max_length=10)
-    lattitude = models.FloatField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
 
     def __str__(self):
