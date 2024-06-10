@@ -4,10 +4,10 @@ from django.db import models
 class Store(models.Model):
     name = models.CharField(max_length=100)
     store_id = models.CharField(max_length=20)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=10)
-    zip_code = models.CharField(max_length=10)
+    zip_code = models.CharField(max_length=10, null=True, blank=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
 
