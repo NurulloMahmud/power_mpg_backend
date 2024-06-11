@@ -13,6 +13,11 @@ class Store(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and self.name.lower() == "pilot":
+            self.name = "Pilot / Flying J"
+        super(Store, self).save(*args, **kwargs)
 
 class StorePrice(models.Model):
     date = models.DateField()

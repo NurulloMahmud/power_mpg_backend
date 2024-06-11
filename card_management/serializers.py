@@ -55,4 +55,3 @@ class CardDriverHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CardDriverHistory
         fields = "__all__"
-        
