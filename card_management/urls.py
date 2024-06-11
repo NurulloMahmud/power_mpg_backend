@@ -12,5 +12,5 @@ router.register(r'card', CardViewSet, basename='card')
 urlpatterns = [
     path('', include(router.urls)),
     path('card/driver/history/', CardDriverHistoryListView.as_view()),
-    path('card/active/', ActiveCardsListView.as_view()),
+    path('card/active/list/', ActiveCardsListView.as_view()),
 ]
