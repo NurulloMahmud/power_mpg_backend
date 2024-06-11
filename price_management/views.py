@@ -67,13 +67,10 @@ class StorePriceCreatePilotView(APIView):
         try:
             with transaction.atomic():
                 for index, row in df.iterrows():
-                    print(row)
                     store_id = row['store_id']
-                    print(">>>", store_id)
                     try:
                         store_obj = Store.objects.filter(name="Pilot", store_id=store_id).first()
                         if not store_obj:
-                            os.remove(file_path)
                             raise ValueError(f"{store_id} Store not found")
                     except:
                         os.remove(file_path)
@@ -106,7 +103,10 @@ class StorePriceCreatePilotView(APIView):
                 "success": False,
                 "message": str(e),
             }
-            os.remove(file_path)
+            try:
+                os.remove(file_path)
+            except:
+                pass
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
 class StorePriceCreateLovesView(APIView):
