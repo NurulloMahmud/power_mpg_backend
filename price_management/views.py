@@ -132,14 +132,30 @@ class StorePriceCreateLovesView(APIView):
         fs = FileSystemStorage()
         filename = fs.save(file.name, file)
         file_path = fs.path(filename)
-        df = pd.read_excel(file_path)
+        
+        # Read the Excel file and specify the dtype for store_id
+        df = pd.read_excel(file_path, dtype={'store_id': str})
+        df = df.fillna('')
 
-        # populate db
+        # Populate the database
         try:
             with transaction.atomic():
                 for index, row in df.iterrows():
                     store_id = row['store_id']
-                    store_obj = Store.objects.filter(name="Loves", store_id=store_id).first()
+                    if store_id.lower() in ['nan', '']:
+                        continue
+                    try:
+                        store_obj = Store.objects.filter(name="Love's", store_id=store_id).first()
+                        if not store_obj:
+                            raise ValueError(f"{store_id} Store not found")
+                    except:
+                        os.remove(file_path)
+                        context = {
+                            "success": False,
+                            "message": f"There is no Love's with this store number. Please create the store {store_id} location first."
+                        }
+                        return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
                     store_price = StorePrice.objects.create(
                         date=date,
                         store=store_obj,
@@ -151,16 +167,22 @@ class StorePriceCreateLovesView(APIView):
                         price_4=float(row['price_4']),
                         price_5=float(row['price_5']),
                     )
+
             context = {
                 "success": True,
                 "message": "Price data imported successfully",
             }
+            os.remove(file_path)
             return Response(context, status=status.HTTP_201_CREATED)
         except Exception as e:
             context = {
                 "success": False,
                 "message": str(e),
             }
+            try:
+                os.remove(file_path)
+            except:
+                pass
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
 class StorePriceCheckView(APIView):
