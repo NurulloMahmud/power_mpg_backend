@@ -9,12 +9,18 @@ from users.permissions import IsAdminRole, IsStaffRole
 
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
-    permission_classes = [IsAuthenticated, IsAdminRole]
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
             return CardWriteSerializer
         return CardReadSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        if self.action in ['list', 'retrieve'] and user.role.lower() == "client":
+            return Card.objects.filter(company=user.company)
+        return Card.objects.all()
 
 class CardDriverHistoryListView(generics.ListAPIView):
     serializer_class = CardDriverHistorySerializer

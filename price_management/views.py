@@ -16,7 +16,7 @@ from datetime import datetime
 class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer
     queryset = Store.objects.all()
-    permission_classes = [IsAuthenticated, IsStaffRole]
+    permission_classes = [IsAuthenticated]
 
 class StorePriceViewSet(viewsets.ModelViewSet):
     queryset = StorePrice.objects.all()
