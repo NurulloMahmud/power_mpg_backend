@@ -40,6 +40,8 @@ class StorePriceByDate(generics.ListAPIView):
 
     def get_queryset(self):
         date = self.request.query_params.get('date')
+        if date is None:
+            date = datetime.today().strftime('%Y-%m-%d')
         date_obj = datetime.strptime(date, '%Y-%m-%d').date()
         return StorePrice.objects.filter(date=date_obj)
 
