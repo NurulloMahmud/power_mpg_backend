@@ -40,7 +40,8 @@ class StorePriceByDate(generics.ListAPIView):
 
     def get_queryset(self):
         date = self.request.query_params.get('date')
-        return StorePrice.objects.filter(date=date)
+        date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+        return StorePrice.objects.filter(date=date_obj)
 
 class StorePriceCreatePilotView(APIView):
     permission_classes = [IsAdminRole]
