@@ -42,3 +42,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["company", "role", "is_active"]
+
+class CurrentUserSerializer(serializers.ModelSerializer):
+    company_price_category = serializers.IntegerField(source='company.price_category', read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ["id", "username", "company_price_category", "role", "is_active"]
