@@ -164,7 +164,7 @@ class StorePriceCreateLovesView(APIView):
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
 class StorePriceCheckView(APIView):
-    permission_classes = [IsAdminRole]
+    # permission_classes = [IsAdminRole]
 
     def get(self, request, date: str, store_name: str):
         # Validate and convert the date string to a datetime object
@@ -180,7 +180,7 @@ class StorePriceCheckView(APIView):
         else:
             return Response({"error": "make sure to send pilot or loves as store name"}, status=status.HTTP_400_BAD_REQUEST)
         
-        exists = StorePrice.objects.filter(date=date, store__name=date_obj).exists()
+        exists = StorePrice.objects.filter(date=date_obj, store__name=store_name).exists()
         if exists:
             return Response(True, status=status.HTTP_200_OK)
         return Response(False, status=status.HTTP_200_OK)
