@@ -10,6 +10,7 @@ from django.db import transaction
 from rest_framework.response import Response
 from rest_framework import status
 import os
+from datetime import datetime
 
 
 class StoreViewSet(viewsets.ModelViewSet):
@@ -160,3 +161,45 @@ class StorePriceCreateLovesView(APIView):
                 "message": str(e),
             }
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
+class StorePriceCheckView(APIView):
+    permission_classes = [IsAdminRole]
+
+    def get(self, request, date: str, store_name: str):
+        # Validate and convert the date string to a datetime object
+        try:
+            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if store_name.lower() == "pilot":
+            store_name = "Pilot / Flying J"
+        elif store_name.lower() == "loves":
+            store_name = "Love's"
+        else:
+            return Response({"error": "make sure to send pilot or loves as store name"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        exists = StorePrice.objects.filter(date=date, store__name=date_obj).exists()
+        if exists:
+            return Response(True, status=status.HTTP_200_OK)
+        return Response(False, status=status.HTTP_200_OK)
+
+class StorePriceDeleteView(APIView):
+    permission_classes = [IsAdminRole]
+
+    def get(self, request, date: str, store_name: str):
+        # Validate and convert the date string to a datetime object
+        try:
+            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if store_name.lower() == "pilot":
+            store_name = "Pilot / Flying J"
+        elif store_name.lower() == "loves":
+            store_name = "Love's"
+        else:
+            return Response({"error": "make sure to send pilot or loves as store name"}, status=status.HTTP_400_BAD_REQUEST)
+
+        StorePrice.objects.filter(date=date_obj, store__name=store_name).delete()
+        return Response({"success": True}, status=status.HTTP_200_OK)
