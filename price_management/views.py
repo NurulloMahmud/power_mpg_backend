@@ -164,7 +164,7 @@ class StorePriceCreateLovesView(APIView):
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
 class StorePriceCheckView(APIView):
-    # permission_classes = [IsAdminRole]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, date: str, store_name: str):
         # Validate and convert the date string to a datetime object
