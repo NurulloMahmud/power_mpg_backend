@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class Company(models.Model):
     name = models.CharField(max_length=100)
     owner = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=14)
+    phone_number = models.CharField(max_length=14, null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     price_category = models.PositiveIntegerField(null=True, blank=True) # remove null later
     is_active = models.BooleanField(default=True)
