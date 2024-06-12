@@ -15,7 +15,7 @@ import os
 class StoreViewSet(viewsets.ModelViewSet):
     serializer_class = StoreSerializer
     queryset = Store.objects.all()
-    # permission_classes = [IsAuthenticated, IsStaffRole]
+    permission_classes = [IsAuthenticated, IsStaffRole]
 
 class StorePriceViewSet(viewsets.ModelViewSet):
     queryset = StorePrice.objects.all()
@@ -62,14 +62,17 @@ class StorePriceCreatePilotView(APIView):
         
         # Read the Excel file and specify the dtype for store_id
         df = pd.read_excel(file_path, dtype={'store_id': str})
+        df = df.fillna('')
 
         # Populate the database
         try:
             with transaction.atomic():
                 for index, row in df.iterrows():
                     store_id = row['store_id']
+                    if store_id.lower() in ['nan', '']:
+                        continue
                     try:
-                        store_obj = Store.objects.filter(name="Pilot", store_id=store_id).first()
+                        store_obj = Store.objects.filter(name="Pilot / Flying J", store_id=store_id).first()
                         if not store_obj:
                             raise ValueError(f"{store_id} Store not found")
                     except:
