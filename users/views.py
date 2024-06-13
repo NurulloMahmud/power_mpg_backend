@@ -3,11 +3,13 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .models import CustomUser, Company
 from .serializers import (
     UserRegisterSerializer, UserListSerializer,
     UserUpdateSerializer, CompanySerializer,
-    CurrentUserSerializer
+    CurrentUserSerializer, MyTokenObtainPairSerializer
 )
 from .permissions import IsAdminRole
 
@@ -36,3 +38,8 @@ class CurrentUserView(APIView):
         user = request.user
         serializer = CurrentUserSerializer(user)
         return Response(serializer.data)
+
+#   customizing simple jwt to return user's role
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
