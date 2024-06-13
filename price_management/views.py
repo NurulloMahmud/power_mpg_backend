@@ -85,7 +85,7 @@ class StorePriceCreatePilotView(APIView):
                             "success": False,
                             "message": f"There is no Pilot / Flying J with this store number. Please create the store {store_id} location first."
                         }
-                        return Response(context, status=status.HTTP_400_BAD_REQUEST)
+                        return Response(context, status=status.HTTP_403_FORBIDDEN)
 
                     store_price = StorePrice.objects.create(
                         date=date,
@@ -156,7 +156,7 @@ class StorePriceCreateLovesView(APIView):
                             "success": False,
                             "message": f"There is no Love's with this store number. Please create the store {store_id} location first."
                         }
-                        return Response(context, status=status.HTTP_400_BAD_REQUEST)
+                        return Response(context, status=status.HTTP_403_FORBIDDEN)
 
                     store_price = StorePrice.objects.create(
                         date=date,
