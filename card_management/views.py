@@ -9,7 +9,7 @@ from users.permissions import IsAdminRole, IsStaffRole
 
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsStaffRole]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
