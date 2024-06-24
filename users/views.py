@@ -44,7 +44,7 @@ class CurrentUserView(APIView):
         serializer = CurrentUserSerializer(user)
         return Response(serializer.data)
 
-#   customizing simple jwt to return user's role
 
+#   customizing simple jwt to return user's role
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
