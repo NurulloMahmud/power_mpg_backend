@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import UserCreateView, UserListView, UserUpdateView, CompanyViewSet, CurrentUserView \
-    , MyTokenObtainPairView
+    , MyTokenObtainPairView, CompanyStatusViewset
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -9,6 +9,8 @@ from rest_framework_simplejwt.views import (
 
 router = DefaultRouter()
 router.register(r'company', CompanyViewSet, basename='company')
+router.register(r'companystatus', CompanyStatusViewset, basename='companystatus')
+
 
 
 urlpatterns = [

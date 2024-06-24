@@ -3,6 +3,11 @@ from .models import CustomUser, Company, CompanyStatus
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
+class CompanyStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyStatus
+        fields = "__all__"
+
 class CompanySerializer(serializers.ModelSerializer):
     users = serializers.SerializerMethodField()
     class Meta:
