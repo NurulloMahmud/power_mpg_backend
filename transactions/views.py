@@ -32,7 +32,7 @@ class TransactionCreateView(APIView):
         file_path = fs.path(filename)
 
         # Read the Excel file and specify the dtype for store_id
-        df = pd.read_excel(file_path, dtype={'store_id': str})
+        df = pd.read_excel(file_path, dtype={'card': str})
         df = df.fillna('')
 
         # Populate the database
@@ -44,7 +44,7 @@ class TransactionCreateView(APIView):
                     date = datetime.strptime(date, '%Y-%m-%d').date()
                     time = row['time']
                     time = datetime.strptime(time, "%H:%M").time()
-                    invoice_number = row['invoice_number']
+                    invoice_number = row['invoice']
                     location_name = row['location_name']
                     city = row['city']
                     state = row['state']
@@ -52,17 +52,21 @@ class TransactionCreateView(APIView):
                     unit_price = row['unit_price']
                     quantity = row['qty']
                     amount = row['amt']
-                    unit_number = row['unit_number']
-                except:
+                    unit_number = row['unit']
+                except Exception as e:
                     context = {
                         "success": False,
-                        "error": f"File has missing required fields in row {index+2}",
+                        "error": f"File has missing required fields in row {index+2}, {e}",
                     }
                     return Response(context, status=status.HTTP_400_BAD_REQUEST)
                 
                 store_name = "Love's" if "loves" in location_name.lower() else "Pilot / Flying J"
+                store_id = ""
+                for char in location_name:
+                    if char.isdigit():
+                        store_id += str(char)
                 # Check if store exists
-                store_obj = Store.objects.filter(name=store_name, city=city, state=state).first()
+                store_obj = Store.objects.filter(name=store_name, store_id=store_id).first()
                 if not store_obj:
                     context = {
                         "success": False,
@@ -74,7 +78,7 @@ class TransactionCreateView(APIView):
                 if not card_obj:
                     context = {
                         "success": False,
-                        "error": f"Card not found in row {index+2}",
+                        "error": f"Card not found in row {index+2}, {card}",
                     }
                     return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
