@@ -35,11 +35,11 @@ class Transaction(models.Model):
         if not self.pk:
             price_category = int(self.card.company.price_category)
             self.company = self.card.company.name
+            store_price = StorePrice.objects.filter(store=self.store, date=self.date).first()
 
             if self.item == 'ULSD':
                 self.transaction_fee = 1.5
                 self.item = "Fuel"
-                store_price = StorePrice.objects.filter(store=self.store, date=self.date).first()
                 self.company_price = store_price.company_price
 
                 # get fuel price for client

@@ -58,6 +58,11 @@ class TransactionCreateView(APIView):
                         "success": False,
                         "error": f"File has missing required fields in row {index+2}, {e}",
                     }
+                    # delete the uploaded file
+                    try:
+                        fs.delete(filename)
+                    except:
+                        pass
                     return Response(context, status=status.HTTP_400_BAD_REQUEST)
                 
                 store_name = "Love's" if "loves" in location_name.lower() else "Pilot / Flying J"
@@ -72,6 +77,10 @@ class TransactionCreateView(APIView):
                         "success": False,
                         "error": f"Store not found in row {index+2}",
                     }
+                    try:
+                        fs.delete(filename)
+                    except:
+                        pass
                     return Response(context, status=status.HTTP_400_BAD_REQUEST)
                 # check if the card exists
                 card_obj = Card.objects.filter(last_digits=card).first()
@@ -80,6 +89,10 @@ class TransactionCreateView(APIView):
                         "success": False,
                         "error": f"Card not found in row {index+2}, {card}",
                     }
+                    try:
+                        fs.delete(filename)
+                    except:
+                        pass
                     return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
                 store_price_obj = StorePrice.objects.filter(store=store_obj, date=date).first()
@@ -88,6 +101,10 @@ class TransactionCreateView(APIView):
                         "success": False,
                         "error": f"Store price not found in row {index+2}",
                     }
+                    try:
+                        fs.delete(filename)
+                    except:
+                        pass
                     return Response(context, status=status.HTTP_400_BAD_REQUEST)
                 
                 # find client's price based on their category
@@ -126,4 +143,8 @@ class TransactionCreateView(APIView):
             "success": True,
             "message": "Transactions created successfully",
         }
+        try:
+            fs.delete(filename)
+        except:
+            pass
         return Response(context, status=status.HTTP_200_OK)
