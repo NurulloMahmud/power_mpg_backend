@@ -9,7 +9,8 @@ from .models import CustomUser, Company
 from .serializers import (
     UserRegisterSerializer, UserListSerializer,
     UserUpdateSerializer, CompanySerializer,
-    CurrentUserSerializer, MyTokenObtainPairSerializer
+    CurrentUserSerializer, MyTokenObtainPairSerializer,
+    CompanyWriteSerializer
 )
 from .permissions import IsAdminRole
 
@@ -30,8 +31,12 @@ class UserUpdateView(generics.UpdateAPIView):
 
 class CompanyViewSet(ModelViewSet):
     queryset = Company.objects.all()
-    serializer_class = CompanySerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return CompanyWriteSerializer
+        return CompanySerializer
 
 class CurrentUserView(APIView):
     def get(self, request):

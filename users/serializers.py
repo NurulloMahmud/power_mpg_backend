@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Company
+from .models import CustomUser, Company, CompanyStatus
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -22,6 +22,13 @@ class CompanySerializer(serializers.ModelSerializer):
         if category < 1 or category > 5:
             raise serializers.ValidationError('Price category must be between 1 and 5')
         return super().create(validated_data)
+
+class CompanyWriteSerializer(serializers.ModelSerializer):
+    status = serializers.PrimaryKeyRelatedField(queryset=CompanyStatus.objects.all(), allow_null=True)
+
+    class Meta:
+        model = Company
+        fields = "__all__"
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
