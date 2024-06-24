@@ -13,16 +13,17 @@ class Transaction(models.Model):
     invoice_number = models.CharField(max_length=100)
     date = models.DateField()
     time = models.TimeField()
+    unit_number = models.CharField(max_length=100, null=True, blank=True)
     retail_price = models.FloatField()
-    client_price = models.FloatField() # show client
-    company_price = models.FloatField() # show our company only | only admin sees it
+    client_price = models.FloatField(null=True, blank=True) # show client
+    company_price = models.FloatField(null=True, blank=True) # show our company only | only admin sees it
     quantity = models.FloatField()
-    retail_amount = models.FloatField()
-    client_amount = models.FloatField()
-    company_amount = models.FloatField()
+    retail_amount = models.FloatField(null=True, blank=True)
+    client_amount = models.FloatField(null=True, blank=True)
+    company_amount = models.FloatField(null=True, blank=True)
     item = models.CharField(max_length=100)
-    client_profit = models.FloatField()
-    company_profit = models.FloatField()
+    client_profit = models.FloatField(null=True, blank=True)
+    company_profit = models.FloatField(null=True, blank=True)
     transaction_fee = models.FloatField(default=0)
     location_name = models.CharField(max_length=100, null=True, blank=True)
 
@@ -38,7 +39,7 @@ class Transaction(models.Model):
             if self.item == 'ULSD':
                 self.transaction_fee = 1.5
                 self.item = "Fuel"
-                store_price = StorePrice.objects.filter(sotre=self.store, date=self.date).first()
+                store_price = StorePrice.objects.filter(store=self.store, date=self.date).first()
                 self.company_price = store_price.company_price
 
                 # get fuel price for client
