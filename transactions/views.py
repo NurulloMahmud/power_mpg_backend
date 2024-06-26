@@ -175,7 +175,7 @@ class TransactionListView(generics.ListAPIView):
         end_date = self.request.query_params.get('end_date', None)
 
         if company_id:
-            queryset = queryset.filter(company_id=company_id)
+            queryset = queryset.filter(card__company__id=company_id)
         if start_date:
             queryset = queryset.filter(date__gte=parse_date(start_date))
         if end_date:
