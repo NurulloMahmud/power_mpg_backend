@@ -11,7 +11,7 @@ class TransactionListAdminSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = [
             "card", "company", "driver", "store", "state","date","item", "unit_number", "retail_price", "client_price",
-            "company_price", "quantity", "retail_amount", "client_amount", "company_amount", "client_profit", "company_profit",
+            "company_price", "quantity", "retail_amount", "client_amount", "company_amount", "client_profit", "company_profit", "paid"
         ]
 
     def get_store(self, obj):
@@ -32,7 +32,7 @@ class TransactionListSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = [
             "card", "company", "driver", "store", "state", "date", "item", "unit_number", "retail_price", "client_price", 
-            "quantity", "retail_amount", "client_amount",  "client_profit", "transaction_fee",
+            "quantity", "retail_amount", "client_amount",  "client_profit", "transaction_fee", "paid"
         ]
 
     def get_store(self, obj):
