@@ -10,6 +10,7 @@ class CompanyStatusSerializer(serializers.ModelSerializer):
 
 class CompanySerializer(serializers.ModelSerializer):
     users = serializers.SerializerMethodField()
+    status = CompanyStatusSerializer()
     class Meta:
         model = Company
         fields = "__all__"
