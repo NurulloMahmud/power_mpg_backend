@@ -10,7 +10,7 @@ class TransactionListAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = [
-            "card", "company", "driver", "store", "state","date","item", "unit_number", "retail_price", "client_price",
+            "id", "card", "company", "driver", "store", "state","date","item", "unit_number", "retail_price", "client_price",
             "company_price", "quantity", "retail_amount", "client_amount", "company_amount", "client_profit", "company_profit", "paid"
         ]
 
@@ -31,7 +31,7 @@ class TransactionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = [
-            "card", "company", "driver", "store", "state", "date", "item", "unit_number", "retail_price", "client_price", 
+            "id", "card", "company", "driver", "store", "state", "date", "item", "unit_number", "retail_price", "client_price", 
             "quantity", "retail_amount", "client_amount",  "client_profit", "transaction_fee", "paid"
         ]
 
