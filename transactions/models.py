@@ -75,3 +75,15 @@ class Transaction(models.Model):
             self.company_profit = (self.retail_amount - self.company_amount - self.client_profit) + self.transaction_fee
 
         super().save(*args, **kwargs)
+
+class TransactionPayment(models.Model):
+    from users.models import Company, CustomUser
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    inserted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    total_amount = models.FloatField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __str__(self):
+        return self.company
