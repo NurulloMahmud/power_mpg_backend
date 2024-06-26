@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
 from django.core.files.storage import FileSystemStorage
+from django.utils.dateparse import parse_date
 from django.db import transaction
 from .models import Transaction
 from price_management.models import Store, StorePrice
@@ -162,3 +163,18 @@ class TransactionListView(generics.ListAPIView):
         if self.request.user.role == "admin":
             return TransactionListAdminSerializer
         return TransactionListSerializer
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company_id = self.request.query_params.get('company_id', None)
+        start_date = self.request.query_params.get('start_date', None)
+        end_date = self.request.query_params.get('end_date', None)
+
+        if company_id:
+            queryset = queryset.filter(company_id=company_id)
+        if start_date:
+            queryset = queryset.filter(date__gte=parse_date(start_date))
+        if end_date:
+            queryset = queryset.filter(date__lte=parse_date(end_date))
+
+        return queryset
