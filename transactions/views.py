@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework import generics
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from .models import Transaction
@@ -12,6 +13,10 @@ from users.permissions import IsAdminRole
 import pandas as pd
 import os
 from datetime import datetime
+
+from .serializers import (
+    TransactionListAdminSerializer, TransactionListSerializer,
+)
 
 
 class TransactionCreateView(APIView):
@@ -148,3 +153,12 @@ class TransactionCreateView(APIView):
         except:
             pass
         return Response(context, status=status.HTTP_200_OK)
+
+class TransactionListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Transaction.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.user.role == "admin":
+            return TransactionListAdminSerializer
+        return TransactionListSerializer
