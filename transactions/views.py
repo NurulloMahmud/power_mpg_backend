@@ -166,6 +166,10 @@ class TransactionListView(generics.ListAPIView):
     
     def get_queryset(self):
         queryset = super().get_queryset()
+        
+        if self.request.user.role == "client":
+            queryset = queryset.filter(card__company=self.request.user.company)
+
         company_id = self.request.query_params.get('company_id', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
