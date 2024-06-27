@@ -202,6 +202,9 @@ class TransactionAmountSummaryView(APIView):
         start_date = request.query_params.get('start_date', None)
         end_date = request.query_params.get('end_date', None)
 
+        if request.user.role == "client":
+            company_id = request.user.company.id
+
         if not start_date or not end_date:
             context = {
                 "success": False,
