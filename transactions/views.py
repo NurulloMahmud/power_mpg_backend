@@ -75,8 +75,20 @@ class TransactionCreateView(APIView):
                 for char in location_name:
                     if char.isdigit():
                         store_id += str(char)
+
                 # Check if store exists
-                store_obj = Store.objects.filter(name=store_name, store_id=store_id).first()
+                if store_id:
+                    if store_name != "Love's" and len(store_id) == 2:
+                        store_id = "0" + str(store_id)
+                    elif store_name != "Love's" and len(store_id) == 1:
+                        store_id = "00" + str(store_id)
+
+                    store_obj = Store.objects.filter(name=store_name, store_id=store_id).first()
+                if not store_obj:
+                    store_obj = Store.objects.filter(name=store_name, city=city.capitalize(), state=state).first()
+                
+                print(f"name: {store_name}, id: {store_id}, obj: {store_obj}")
+
                 if not store_obj:
                     context = {
                         "success": False,
@@ -225,3 +237,4 @@ class TransactionAmountSummaryView(APIView):
         }
 
         return Response(context, status=status.HTTP_200_OK)
+
