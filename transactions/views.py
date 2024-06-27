@@ -227,6 +227,7 @@ class TransactionAmountSummaryView(APIView):
         total_client_amount = queryset.aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
         total_paid_amount = queryset.filter(paid=True).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
         total_debt_amount = queryset.filter(paid=False).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
+        total_client_profit = queryset.aggregate(Sum('client_profit'))['client_profit__sum'] or 0.0
 
         context = {
             "success": True,
@@ -234,6 +235,7 @@ class TransactionAmountSummaryView(APIView):
             "total_client_amount": total_client_amount,
             "total_paid_amount": total_paid_amount,
             "total_debt_amount": total_debt_amount,
+            "total_client_profit": total_client_profit,
         }
 
         return Response(context, status=status.HTTP_200_OK)
