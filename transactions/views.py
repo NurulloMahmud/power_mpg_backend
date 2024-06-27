@@ -6,13 +6,12 @@ from rest_framework import generics
 from django.core.files.storage import FileSystemStorage
 from django.utils.dateparse import parse_date
 from django.db import transaction
+from django.db.models import Sum
 from .models import Transaction
 from price_management.models import Store, StorePrice
-from users.models import Company
 from card_management.models import Card
 from users.permissions import IsAdminRole
 import pandas as pd
-import os
 from datetime import datetime
 
 from .serializers import (
@@ -182,3 +181,47 @@ class TransactionListView(generics.ListAPIView):
             queryset = queryset.filter(date__lte=parse_date(end_date))
 
         return queryset
+
+class TransactionAmountSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        company_id = request.query_params.get('company_id', None)
+        start_date = request.query_params.get('start_date', None)
+        end_date = request.query_params.get('end_date', None)
+
+        if not start_date or not end_date:
+            context = {
+                "success": False,
+                "message": "Missing start_date and/or end_date",
+            }
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
+        start_date = parse_date(start_date)
+        end_date = parse_date(end_date)
+
+        if start_date is None or end_date is None:
+            context = {
+                "success": False,
+                "message": "Invalid date format",
+            }
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = Transaction.objects.filter(date__gte=start_date, date__lte=end_date)
+        if company_id:
+            queryset = queryset.filter(card__company__id=company_id)
+
+        total_retail_amount = queryset.aggregate(Sum('retail_amount'))['retail_amount__sum'] or 0.0
+        total_client_amount = queryset.aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
+        total_paid_amount = queryset.filter(paid=True).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
+        total_debt_amount = queryset.filter(paid=False).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
+
+        context = {
+            "success": True,
+            "total_retail_amount": total_retail_amount,
+            "total_client_amount": total_client_amount,
+            "total_paid_amount": total_paid_amount,
+            "total_debt_amount": total_debt_amount,
+        }
+
+        return Response(context, status=status.HTTP_200_OK)
