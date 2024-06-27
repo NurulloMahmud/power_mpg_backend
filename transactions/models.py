@@ -67,7 +67,6 @@ class Transaction(models.Model):
                 self.company_price = self.retail_price
             
             self.client_price = float(client_price)
-            self.company_price = store_price.company_price
             self.retail_amount = self.retail_price * self.quantity
             self.client_amount = self.client_price * self.quantity
             self.company_amount = self.company_price * self.quantity
