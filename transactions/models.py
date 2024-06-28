@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 
 
 
@@ -14,16 +15,16 @@ class Transaction(models.Model):
     date = models.DateField()
     time = models.TimeField()
     unit_number = models.CharField(max_length=100, null=True, blank=True)
-    retail_price = models.FloatField()
-    client_price = models.FloatField(null=True, blank=True) # show client
-    company_price = models.FloatField(null=True, blank=True) # show our company only | only admin sees it
+    retail_price = models.DecimalField(max_digits=10, decimal_places=3)
+    client_price = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True) # show client
+    company_price = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True) # show our company only | only admin sees it
     quantity = models.FloatField()
-    retail_amount = models.FloatField(null=True, blank=True)
-    client_amount = models.FloatField(null=True, blank=True)
-    company_amount = models.FloatField(null=True, blank=True)
+    retail_amount = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
+    client_amount = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
+    company_amount = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     item = models.CharField(max_length=100)
-    client_profit = models.FloatField(null=True, blank=True)
-    company_profit = models.FloatField(null=True, blank=True)
+    client_profit = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
+    company_profit = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     transaction_fee = models.FloatField(default=0)
     location_name = models.CharField(max_length=100, null=True, blank=True)
     paid = models.BooleanField(default=False)
@@ -66,12 +67,17 @@ class Transaction(models.Model):
                 client_price = self.retail_price
                 self.company_price = self.retail_price
             
-            self.client_price = float(client_price)
-            self.retail_amount = self.retail_price * self.quantity
-            self.client_amount = self.client_price * self.quantity
-            self.company_amount = self.company_price * self.quantity
-            self.client_profit = self.retail_amount - self.client_amount - self.transaction_fee
-            self.company_profit = (self.retail_amount - self.company_amount - self.client_profit) + self.transaction_fee
+            print(client_price)
+            print(self.company_price)
+            print(self.retail_price)
+            print(self.client_price)
+            
+            self.client_price = Decimal(client_price)
+            self.retail_amount = Decimal(self.retail_price) * Decimal(self.quantity)
+            self.client_amount = self.client_price * Decimal(self.quantity)
+            self.company_amount = Decimal(self.company_price) * Decimal(self.quantity)
+            self.client_profit = self.retail_amount - self.client_amount - Decimal(self.transaction_fee)
+            self.company_profit = (self.retail_amount - self.company_amount - self.client_profit) + Decimal(self.transaction_fee)
 
         super().save(*args, **kwargs)
 
@@ -80,7 +86,7 @@ class TransactionPayment(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     inserted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    total_amount = models.FloatField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=3)
     start_date = models.DateField()
     end_date = models.DateField()
 
