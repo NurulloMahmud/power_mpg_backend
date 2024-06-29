@@ -23,6 +23,8 @@ class TransactionCreateView(APIView):
     permission_classes = [IsAuthenticated, IsAdminRole]
 
     def post(self, request):
+        from accounts.models import Account
+
         try:
             file = request.FILES['file']
         except:
@@ -138,7 +140,7 @@ class TransactionCreateView(APIView):
                     client_price = store_price_obj.price_5
                 
                 # create transaction
-                Transaction.objects.create(
+                new_transaction = Transaction.objects.create(
                     store=store_obj,
                     card=card_obj,
                     driver=card_obj.driver,
@@ -155,6 +157,18 @@ class TransactionCreateView(APIView):
                     item=item,
                     retail_amount=amount,
                 )
+
+                # adjust the account balance accordingly
+                try:
+                    account = Account.objects.filter(company=new_transaction.card.company).first()
+                    account.balance -= new_transaction.client_amount
+                    account.save()
+                except:
+                    context = {
+                        "success": False,
+                        "error": f"Failed to adjust account balance, make sure {new_transaction.company} has an account opened",
+                    }
+                    return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
         context = {
             "success": True,

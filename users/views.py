@@ -37,6 +37,26 @@ class CompanyViewSet(ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return CompanyWriteSerializer
         return CompanySerializer
+    
+    def create(self, request, *args, **kwargs):
+        from accounts.models import Account
+
+        data = request.data
+        account_type = data.pop('account_type', None)
+        if not account_type:
+            raise ValueError('Account type is required')
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        company = serializer.save()
+        account = Account.objects.create(
+            company=company,
+            account_type=account_type
+        )
+        
+        account.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
 
 class CurrentUserView(APIView):
     def get(self, request):
