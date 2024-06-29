@@ -27,13 +27,15 @@ class Transaction(models.Model):
     company_profit = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
     transaction_fee = models.FloatField(default=0)
     location_name = models.CharField(max_length=100, null=True, blank=True)
-    paid = models.BooleanField(default=False)
+    debt = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
 
     def __str__(self):
         return self.card
     
     def save(self, *args, **kwargs):
         from price_management.models import StorePrice
+        from accounts.models import Account
+
         if not self.pk:
             price_category = int(self.card.company.price_category)
             self.company = self.card.company.name
@@ -67,17 +69,17 @@ class Transaction(models.Model):
                 client_price = self.retail_price
                 self.company_price = self.retail_price
             
-            print(client_price)
-            print(self.company_price)
-            print(self.retail_price)
-            print(self.client_price)
-            
             self.client_price = Decimal(client_price)
             self.retail_amount = Decimal(self.retail_price) * Decimal(self.quantity)
             self.client_amount = self.client_price * Decimal(self.quantity)
             self.company_amount = Decimal(self.company_price) * Decimal(self.quantity)
             self.client_profit = self.retail_amount - self.client_amount - Decimal(self.transaction_fee)
             self.company_profit = (self.retail_amount - self.company_amount - self.client_profit) + Decimal(self.transaction_fee)
+            self.debt = Decimal(self.client_amount)
+
+            account = Account.objects.get(company=self.card.company)
+            account.balance -= self.client_amount
+            account.save()
 
         super().save(*args, **kwargs)
 

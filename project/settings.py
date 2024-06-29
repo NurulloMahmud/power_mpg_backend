@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'price_management',
     'card_management',
     'transactions',
+    'accounts',
     # third party
     'rest_framework',
     'rest_framework_simplejwt',
