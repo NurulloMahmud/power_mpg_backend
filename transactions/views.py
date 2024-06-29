@@ -228,8 +228,8 @@ class TransactionAmountSummaryView(APIView):
 
         total_retail_amount = queryset.aggregate(Sum('retail_amount'))['retail_amount__sum'] or 0.0
         total_client_amount = queryset.aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
-        total_paid_amount = queryset.filter(paid=True).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
-        total_debt_amount = queryset.filter(paid=False).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
+        total_paid_amount = queryset.filter(debt=0).aggregate(Sum('client_amount'))['client_amount__sum'] or 0.0
+        total_debt_amount = queryset.filter(debt__gt=0).aggregate(Sum('debt'))['debt__sum'] or 0.0
         total_client_profit = queryset.aggregate(Sum('client_profit'))['client_profit__sum'] or 0.0
 
         context = {

@@ -3,6 +3,10 @@ from decimal import Decimal
 
 
 
+class TransactionManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().order_by('date', 'time')
+
 class Transaction(models.Model):
     from card_management.models import Card
     from price_management.models import Store
@@ -29,8 +33,13 @@ class Transaction(models.Model):
     location_name = models.CharField(max_length=100, null=True, blank=True)
     debt = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
 
+    objects = TransactionManager()
+
     def __str__(self):
         return self.card
+    
+    class Meta:
+        ordering = ['date', 'time']
     
     def save(self, *args, **kwargs):
         from price_management.models import StorePrice
@@ -83,14 +92,3 @@ class Transaction(models.Model):
 
         super().save(*args, **kwargs)
 
-class TransactionPayment(models.Model):
-    from users.models import Company, CustomUser
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    inserted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=3)
-    start_date = models.DateField()
-    end_date = models.DateField()
-
-    def __str__(self):
-        return self.company
