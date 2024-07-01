@@ -30,6 +30,7 @@ class UserUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminRole]
 
 class CompanyViewSet(ModelViewSet):
+    from accounts.models import AccountType
     queryset = Company.objects.all()
     permission_classes = [IsAuthenticated, IsAdminRole]
 
@@ -39,10 +40,15 @@ class CompanyViewSet(ModelViewSet):
         return CompanySerializer
     
     def create(self, request, *args, **kwargs):
+        from accounts.models import AccountType
         from accounts.models import Account
 
         data = request.data
         account_type = data.pop('account_type', None)
+        try:
+            account_type_obj = AccountType.objects.get(id=account_type)
+        except:
+            raise ValueError("Account type is required")
         if not account_type:
             raise ValueError('Account type is required')
 
@@ -51,7 +57,8 @@ class CompanyViewSet(ModelViewSet):
         company = serializer.save()
         account = Account.objects.create(
             company=company,
-            account_type=account_type
+            account_type=account_type_obj,
+            balance=0
         )
         
         account.save()
