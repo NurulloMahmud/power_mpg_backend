@@ -39,7 +39,7 @@ class AccountViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ["company", "account_type", "balance"]
+        fields = ["id", "company", "account_type", "balance"]
 
     def get_company(self, obj):
         return obj.company.name
