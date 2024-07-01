@@ -21,3 +21,22 @@ class PaymentReadSerializer(serializers.ModelSerializer):
 
     def get_account(self, obj):
         return obj.account.company.name
+
+class AccountWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = "__all__"
+
+class AccountViewSerializer(serializers.ModelSerializer):
+    company = serializers.SerializerMethodField()
+    account_type = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Account
+        fields = ["company", "account_type", "balance"]
+
+    def get_company(self, obj):
+        return obj.account.company.name
+
+    def get_account_type(self, obj):
+        return obj.account_type.name
