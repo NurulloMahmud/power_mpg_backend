@@ -34,7 +34,7 @@ class CompanyAccountSerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 class AccountViewSerializer(serializers.ModelSerializer):
-    company = CompanyAccountSerializer(read_only=True)
+    company = serializers.SerializerMethodField()
     account_type = serializers.SerializerMethodField()
 
     class Meta:
