@@ -27,8 +27,14 @@ class AccountWriteSerializer(serializers.ModelSerializer):
         model = Account
         fields = "__all__"
 
+class CompanyAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        from users.models import Company
+        model = Company
+        fields = ["id", "name"]
+
 class AccountViewSerializer(serializers.ModelSerializer):
-    company = serializers.SerializerMethodField()
+    company = CompanyAccountSerializer(read_only=True)
     account_type = serializers.SerializerMethodField()
 
     class Meta:
