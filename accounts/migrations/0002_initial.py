@@ -9,14 +9,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('accounts', '0001_initial'),
         ('users', '0001_initial'),
-        ('card_management', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='card',
+            model_name='account',
             name='company',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='users.company'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.company'),
         ),
     ]
